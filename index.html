@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>vansh挽诗</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            background-image: url('1.jpg');
+            background-size: contain;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: repeat;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto 0;
+            padding: 15px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            backdrop-filter: blur(5px);
+            z-index: -2;
+        }
+
+        .profile {
+            text-align: center;
+            padding: 15px 15px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9)), url('cover.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .avatar-container {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-info {
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .name {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .title {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .click-hint {
+            font-family: 'STHupo', '华文琥珀', cursive;
+            color: #ff69b4;
+            font-size: 1em;
+            margin-top: 8px;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: floatingText 2s ease-in-out infinite;
+        }
+
+        .skills {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.15);
+            margin-top: -15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+
+        .skill-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item {
+            background-color: rgba(248, 249, 250, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid #3498db;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .skill-title {
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .skill-description {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        #audioPlayer {
+            display: none;
+        }
+
+        .music-control {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 3px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            backdrop-filter: blur(5px);
+            height: 24px;
+            max-width: 120px;
+        }
+
+        .music-control button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-name {
+            font-size: 10px;
+            max-width: 80px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        @keyframes floatingText {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .click-hint {
+            font-family: 'STHupo', '华文琥珀', cursive;
+            color: #ff69b4;
+            font-size: 1.2em;
+            margin: 5px 0 15px;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: floatingText 2s ease-in-out infinite;
+        }
+
+        .voice-mode .music-control {
+            background: rgba(255, 192, 203, 0.85);
+        }
+
+        .voice-mode .music-control button {
+            color: #e74c3c;
+        }
+
+        .voice-mode .music-name {
+            color: #c0392b;
+        }
+
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 12px 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            padding: 0 15px;
+        }
+
+        .nav-item {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95em;
+            padding: 6px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            background: transparent;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 255, 0, 0.1);
+            color: #fff;
+            border-color: rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 255, 0, 0.15);
+            color: #fff;
+            border-color: rgba(0, 255, 0, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.25);
+        }
+
+        .nav-item:active {
+            transform: translateY(1px);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.15);
+        }
+
+        .voice-visualizer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 5px;
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .voice-visualizer.active {
+            display: flex;
+        }
+
+        .bar {
+            width: 3px;
+            height: 20px;
+            background: #ff69b4;
+            border-radius: 3px;
+            animation: sound 0ms -800ms linear infinite alternate;
+        }
+
+        @keyframes sound {
+            0% {
+                height: 3px;
+            }
+            100% {
+                height: 20px;
+            }
+        }
+
+        .bar:nth-child(1) { animation-duration: 474ms; }
+        .bar:nth-child(2) { animation-duration: 433ms; }
+        .bar:nth-child(3) { animation-duration: 407ms; }
+        .bar:nth-child(4) { animation-duration: 458ms; }
+        .bar:nth-child(5) { animation-duration: 400ms; }
+        .bar:nth-child(6) { animation-duration: 427ms; }
+        .bar:nth-child(7) { animation-duration: 441ms; }
+        .bar:nth-child(8) { animation-duration: 419ms; }
+        .bar:nth-child(9) { animation-duration: 487ms; }
+        .bar:nth-child(10) { animation-duration: 442ms; }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(255, 105, 180, 0.5),
+                            0 0 40px rgba(255, 105, 180, 0.3);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(255, 105, 180, 0.8),
+                            0 0 60px rgba(255, 105, 180, 0.5);
+                transform: scale(1.03);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(255, 105, 180, 0.5),
+                            0 0 40px rgba(255, 105, 180, 0.3);
+                transform: scale(1);
+            }
+        }
+
+        .voice-mode .avatar {
+            animation: pulseGlow 2s ease-in-out infinite;
+            border-color: #ff69b4;
+        }
+
+        .voice-mode .avatar:hover {
+            animation: pulseGlow 1s ease-in-out infinite;
+            transform: scale(1.05);
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 210px;
+            height: 210px;
+            margin: 0 auto 10px;
+        }
+
+        .avatar {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top: 3px solid #ff69b4;
+            border-right: 3px solid #ff69b4;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .voice-mode .avatar-ring {
+            opacity: 1;
+            animation: rotate 3s linear infinite;
+        }
+
+        .avatar-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 5px;
+        }
+
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-width: 3px;
+        }
+
+        .avatar-ring {
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-width: 2px;
+        }
+
+        .name {
+            font-size: 1.8em;
+            margin-bottom: 2px;
+        }
+
+        .title {
+            font-size: 1em;
+            margin-bottom: 5px;
+            padding: 0 5px;
+        }
+
+        .click-hint {
+            font-size: 1em;
+            margin: 2px 0 8px;
+        }
+
+        .music-control {
+            padding: 8px 12px;
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            z-index: 1001;
+        }
+
+        .music-control button {
+            font-size: 20px;
+            padding: 3px;
+        }
+
+        .music-name {
+            font-size: 12px;
+            max-width: 150px;
+        }
+
+        .voice-visualizer {
+            padding: 10px 15px;
+            bottom: 60px;
+        }
+
+        .bar {
+            width: 2px;
+            height: 15px;
+        }
+
+        .nav-container {
+            gap: 20px;
+        }
+
+        .nav-item {
+            font-size: 1em;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-item active">主页</a>
+            <a href="gallery.html" class="nav-item">游戏截图</a>
+            <a href="reviews.html" class="nav-item">信誉评价</a>
+        </div>
+    </div>
+    <audio id="audioPlayer" style="display: none;"></audio>
+    <audio id="voicePlayer" style="display: none;"></audio>
+    
+    <div class="container">
+        <div class="profile">
+            <div class="music-control">
+                <button id="playPauseBtn">▶️</button>
+                <span id="musicName" class="music-name">未播放</span>
+            </div>
+            
+            <div class="avatar-container">
+                <img src="ico.jpg" alt="头像" class="avatar" id="avatarImg">
+            </div>
+            
+            <div class="profile-info">
+                <h1 class="name">vansh挽诗</h1>
+                <p class="title">游戏陪玩 | 混技达人 | 温柔青年系音</p>
+                <p class="click-hint">✨ 点我头像听声音 ✨</p>
+            </div>
+        </div>
+
+        <div class="skills">
+            <h2 class="section-title">个人技能</h2>
+            <div class="skill-list">
+                <div class="skill-item">
+                    <h3 class="skill-title">游戏专长</h3>
+                    <p class="skill-description">
+                        - 王者巅峰最高2150<br>
+                        - 1.1暃、多万战英雄<br>
+                        - steam双人游戏陪玩<br>
+                        - 光遇、cfm等其他游戏<br>
+                    </p>
+                </div>
+
+                <div class="skill-item">
+                    <h3 class="skill-title">音色性格</h3>
+                    <p class="skill-description">
+                        - 温柔青年音<br>
+                        - 话多不高冷<br>
+                        - 脾气心态无敌好<br>
+                        - 其实你可以听听我的试音哒<br>
+                    </p>
+                </div>
+
+                <div class="skill-item">
+                    <h3 class="skill-title">其他技能</h3>
+                    <p class="skill-description">
+                        - 前端后端编程电脑端软件制作定����<br>
+                        - 电脑疑难杂症重装系统蓝屏卡顿修复<br>
+                        - 吉他弹唱和唱歌（吉他不是特厉害）<br>
+                        - 此页面为个人自制静态前端作为展示<br>
+                    </p>
+                </div>
+
+                <div class="skill-item">
+                    <h3 class="skill-title">在线时间和联系方式</h3>
+                    <p class="skill-description">
+                        没起床气睡着都能喊起来QAQ<br>
+                        微信：vs1313113<br>
+                        QQ:   2076436932<br>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="voice-visualizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const musicList = ["BabyDon't Cry.mp3"];
+            const audioPlayer = document.getElementById('audioPlayer');
+            const voicePlayer = document.getElementById('voicePlayer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const musicNameSpan = document.getElementById('musicName');
+            let currentSong = '';
+
+            // 背景音乐相关函数
+            function updatePlayPauseButton() {
+                playPauseBtn.textContent = audioPlayer.paused ? '▶️' : '⏸️';
+            }
+
+            function getRandomSong() {
+                const randomIndex = Math.floor(Math.random() * musicList.length);
+                return musicList[randomIndex];
+            }
+
+            function playRandomSong() {
+                const song = getRandomSong();
+                currentSong = song;
+                audioPlayer.src = `./Music/${song}`;
+                audioPlayer.volume = 0.4;
+                
+                const playPromise = audioPlayer.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        console.log('开始播放背景音乐');
+                        musicNameSpan.textContent = song.replace('.mp3', '');
+                        updatePlayPauseButton();
+                    })
+                    .catch(error => {
+                        console.error('背景音乐播放失败，尝试重试:', error);
+                        // 如果播放失败，3秒后重试
+                        setTimeout(() => {
+                            playRandomSong();
+                        }, 3000);
+                        musicNameSpan.textContent = '播放失败，正在重试...';
+                    });
+                }
+            }
+
+            function togglePlay() {
+                if (audioPlayer.paused) {
+                    if (!currentSong) {
+                        playRandomSong();
+                    } else {
+                        audioPlayer.play().then(() => {
+                            updatePlayPauseButton();
+                        });
+                    }
+                } else {
+                    audioPlayer.pause();
+                    updatePlayPauseButton();
+                }
+            }
+
+            // 头像点击音频播放
+            const avatarImg = document.getElementById('avatarImg');
+            const clickHint = document.querySelector('.click-hint');
+            const container = document.querySelector('.container');
+
+            // 预加载音频文件
+            let voiceAudio = new Audio();
+            voiceAudio.src = './Music/Voice.mp3';  // 修正大小写
+            voiceAudio.preload = 'auto';
+
+            let isVoiceLoaded = false;
+            let isVoicePlaying = false;
+
+            voiceAudio.addEventListener('canplaythrough', () => {
+                isVoiceLoaded = true;
+                console.log('声音文件加载完成');
+            });
+
+            function playVoice() {
+                if (!isVoiceLoaded) {
+                    clickHint.innerHTML = '✨ 声音加载中... ✨';
+                    return;
+                }
+
+                try {
+                    audioPlayer.volume = 0.2;
+                    voiceAudio.currentTime = 0;
+                    voiceAudio.volume = 1;
+                    
+                    const playPromise = voiceAudio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            isVoicePlaying = true;
+                            clickHint.innerHTML = '✨ 再次点击头像关闭试音 ✨';
+                            container.classList.add('voice-mode');
+                            document.querySelector('.voice-visualizer').classList.add('active');
+                        }).catch(error => {
+                            console.error('播放失败:', error);
+                            isVoicePlaying = false;
+                            audioPlayer.volume = 0.4;
+                            clickHint.innerHTML = '✨ 播放失败，请重试 ✨';
+                            setTimeout(() => {
+                                clickHint.innerHTML = '✨ 点我头像听声音 ✨';
+                            }, 2000);
+                        });
+                    }
+                } catch (error) {
+                    console.error('播放出错:', error);
+                    isVoicePlaying = false;
+                    audioPlayer.volume = 0.4;
+                    clickHint.innerHTML = '✨ 播放失败，请重试 ✨';
+                    setTimeout(() => {
+                        clickHint.innerHTML = '✨ 点我头像听声音 ✨';
+                    }, 2000);
+                }
+            }
+
+            avatarImg.addEventListener('click', () => {
+                if (isVoicePlaying) {
+                    voiceAudio.pause();
+                    voiceAudio.currentTime = 0;
+                    isVoicePlaying = false;
+                    audioPlayer.volume = 0.4;
+                    clickHint.innerHTML = '✨ 点我头像听声音 ✨';
+                    container.classList.remove('voice-mode');
+                    document.querySelector('.voice-visualizer').classList.remove('active');
+                } else {
+                    playVoice();
+                }
+            });
+
+            voiceAudio.addEventListener('ended', () => {
+                isVoicePlaying = false;
+                audioPlayer.volume = 0.4;
+                clickHint.innerHTML = '✨ 点我头像听声音 ✨';
+                container.classList.remove('voice-mode');
+                document.querySelector('.voice-visualizer').classList.remove('active');
+            });
+
+            // 事件监听
+            playPauseBtn.addEventListener('click', togglePlay);
+            audioPlayer.addEventListener('ended', playRandomSong);
+            audioPlayer.addEventListener('play', () => {
+                musicNameSpan.textContent = currentSong.replace('.mp3', '');
+            });
+
+            // 页面加载时预加载声音
+            window.addEventListener('load', () => {
+                voiceAudio.load();
+            });
+
+            // 页面加载时初始化和自动播放
+            window.addEventListener('load', () => {
+                audioPlayer.volume = 0.4;
+                playRandomSong();  // 自动播放背景音乐
+            });
+        });
+    </script>
+</body>
+</html> 
